@@ -1,13 +1,24 @@
 package org.rikker.models;
 
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "user")
 public class User {
+
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "lastName")
     private String lastName;
 
+    @Column(name = "email")
     private String email;
 
 
@@ -16,7 +27,7 @@ public class User {
     }
 
     public User(int id, String name, String lastName, String email) {
-        this.id=id;
+        this.id = id;
         this.name = name;
         this.lastName = lastName;
         this.email = email;

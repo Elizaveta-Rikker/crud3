@@ -1,7 +1,12 @@
 package org.rikker.dao;
 
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.rikker.models.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +14,7 @@ import java.util.List;
 
 @Component
 public class UserDAO {
+
     private static int PEOPLE_COUNT;
     private List<User> users;
 
@@ -20,10 +26,17 @@ public class UserDAO {
         users.add(new User(++PEOPLE_COUNT, "Tom", "Cruise", "tom@mail.ru"));
         users.add(new User(++PEOPLE_COUNT, "Tom", "Cruise", "tom@mail.ru"));
     }
+    private SessionFactory sessionFactory;
 
+    @Autowired
+    public void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
+    @Transactional
     public List<User> index() {
-        return users;
+        Session session = sessionFactory.getCurrentSession();
+        return session.createQuery("from User", User.class).list();
     }
 
 
