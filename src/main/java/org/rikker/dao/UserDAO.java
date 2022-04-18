@@ -16,15 +16,15 @@ import java.util.List;
 public class UserDAO {
 
     private static int PEOPLE_COUNT;
-    private List<User> users;
+    private List<User> userList;
 
     {
-        users = new ArrayList<>();
+        userList = new ArrayList<>();
 
-        users.add(new User(++PEOPLE_COUNT, "Tom", "Cruise", "tom@mail.ru"));
-        users.add(new User(++PEOPLE_COUNT, "Tom", "Cruise", "tom@mail.ru"));
-        users.add(new User(++PEOPLE_COUNT, "Tom", "Cruise", "tom@mail.ru"));
-        users.add(new User(++PEOPLE_COUNT, "Tom", "Cruise", "tom@mail.ru"));
+        userList.add(new User(++PEOPLE_COUNT, "Tom", "Cruise", "tom@mail.ru"));
+        userList.add(new User(++PEOPLE_COUNT, "Tom", "Cruise", "tom@mail.ru"));
+        userList.add(new User(++PEOPLE_COUNT, "Tom", "Cruise", "tom@mail.ru"));
+        userList.add(new User(++PEOPLE_COUNT, "Tom", "Cruise", "tom@mail.ru"));
     }
     private SessionFactory sessionFactory;
 
@@ -39,18 +39,18 @@ public class UserDAO {
         return session.createQuery("from User", User.class).list();
     }
 
-
+    @Transactional
     public User show(int id) {
-        return users.stream().filter(person -> person.getId() == id).findAny().orElse(null);
+        return userList.stream().filter(person -> person.getId() == id).findAny().orElse(null);
     }
 
-
+    @Transactional
     public void save(User user) {
         user.setId(++PEOPLE_COUNT);
-        users.add(user);
+        userList.add(user);
     }
 
-
+    @Transactional
     public void update(int id, User updatedUser) {
         User userToBeUpdated = show(id);
 
@@ -59,9 +59,9 @@ public class UserDAO {
         userToBeUpdated.setEmail(updatedUser.getEmail());
     }
 
-
+    @Transactional
     public void delete(int id) {
-        users.removeIf(u -> u.getId() == id);
+        userList.removeIf(u -> u.getId() == id);
     }
 
 
