@@ -1,15 +1,13 @@
 package org.rikker.dao;
 
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+
 import org.rikker.models.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
@@ -20,7 +18,6 @@ public class UserDAOImpl implements UserDAO {
     private EntityManager entityManager;
 
 
-    @Transactional
     public List<User> index() {
         String jpql = "SELECT u FROM User u";
         TypedQuery<User> query = entityManager.createQuery(jpql, User.class);
@@ -28,26 +25,27 @@ public class UserDAOImpl implements UserDAO {
         return query.getResultList();
     }
 
-    @Transactional
     public User show(int id) {
         return entityManager.find(User.class, id);
     }
 
-    @Transactional
     public void save(User user) {
         entityManager.persist(user);
     }
 
-    @Transactional
     public void update(int id, User updatedUser) {
-        entityManager.merge(entityManager.find(User.class, id));
+        User userToBeUpdated = entityManager.find(User.class, id);
+        userToBeUpdated.setName(updatedUser.getName());
+        userToBeUpdated.setLastName(updatedUser.getLastName());
+        userToBeUpdated.setEmail(updatedUser.getEmail());
+        entityManager.merge(userToBeUpdated);
 
     }
 
-    @Transactional
     public void delete(int id) {
-        User user = entityManager.find(User.class, id);
-        entityManager.remove(user);
+        Query query = entityManager.createNativeQuery("DELETE FROM USERS WHERE ID = " + id);
+        query.executeUpdate();
+
     }
 
 
