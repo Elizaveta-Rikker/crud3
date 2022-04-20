@@ -1,16 +1,10 @@
 package org.rikker.dao;
 
-
-
 import org.rikker.models.User;
 import org.springframework.stereotype.Repository;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import java.util.List;
-
 
 @Repository
 public class UserDAOImpl implements UserDAO {
@@ -19,10 +13,7 @@ public class UserDAOImpl implements UserDAO {
 
 
     public List<User> index() {
-        String jpql = "SELECT u FROM User u";
-        TypedQuery<User> query = entityManager.createQuery(jpql, User.class);
-
-        return query.getResultList();
+        return entityManager.createQuery("SELECT u FROM User u", User.class).getResultList();
     }
 
     public User show(int id) {
@@ -33,19 +24,13 @@ public class UserDAOImpl implements UserDAO {
         entityManager.persist(user);
     }
 
-    public void update(int id, User updatedUser) {
-        User userToBeUpdated = entityManager.find(User.class, id);
-        userToBeUpdated.setName(updatedUser.getName());
-        userToBeUpdated.setLastName(updatedUser.getLastName());
-        userToBeUpdated.setEmail(updatedUser.getEmail());
-        entityManager.merge(userToBeUpdated);
+    public void update(User updatedUser) {
+        entityManager.merge(updatedUser);
 
     }
 
     public void delete(int id) {
-        Query query = entityManager.createNativeQuery("DELETE FROM USERS WHERE ID = " + id);
-        query.executeUpdate();
-
+        entityManager.createNativeQuery("DELETE FROM USERS WHERE ID = :id").setParameter("id", id).executeUpdate();
     }
 
 
